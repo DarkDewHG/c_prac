@@ -10,16 +10,18 @@ int fd[2];
 void alrmHandler(int signo)
 {
 	signal(SIGALRM,alrmHandler);
+	int i;
 	if (flag)
 	{
-		kill(pid,SIGKILL);
+		i=wait4(-1,NULL,WNOHANG,NULL);
+		if (i<=0)
+			kill(pid,SIGKILL);
 		_exit(0);
 	}
 	int ef = EOF;
 	write(fd[1],&ef,sizeof(int));
 	alarm(1);
 	flag=1;
-	wait(NULL);
 }
 
 void childHandler(int signo)
